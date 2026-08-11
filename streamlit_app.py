@@ -148,7 +148,12 @@ def main():
         st.subheader("Custom dataset preview")
         st.dataframe(df.head())
 
-        target_column = st.selectbox("Choose the target column", options=df.columns)
+        default_target_index = df.columns.get_loc("target") if "target" in df.columns else 0
+        target_column = st.selectbox(
+            "Choose the target column",
+            options=df.columns,
+            index=default_target_index,
+        )
         feature_columns = st.multiselect(
             "Choose feature columns",
             options=[col for col in df.columns if col != target_column],
@@ -170,6 +175,24 @@ def main():
 
     X = df[feature_columns].copy()
     y = df[target_column].copy()
+
+    if y.isna().any():
+        missing_target = y.isna().sum()
+        st.warning(f"Target column has {missing_target} missing value(s). These rows will be removed.")
+        keep_index = y.notna()
+        X = X.loc[keep_index]
+        y = y.loc[keep_index]
+
+    if X.isna().any().any():
+        missing_features = X.isna().sum().sum()
+        st.warning(f"Feature data has {missing_features} missing value(s). Rows with missing values will be removed.")
+        keep_index = X.dropna().index
+        X = X.loc[keep_index]
+        y = y.loc[keep_index]
+
+    if X.empty or y.empty:
+        st.error("No valid rows remain after removing missing data. Please upload a dataset with complete rows.")
+        st.stop()
 
     X = encode_categorical(X)
     if scale_features:
@@ -212,7 +235,12 @@ def main():
             "n_estimators": rf_n_estimators,
         }
         model = build_model(model_name, params)
-        stats = evaluate_model(model, X_train, X_test, y_train, y_test)
+        try:
+            stats = evaluate_model(model, X_train, X_test, y_train, y_test)
+        except Exception as e:
+            st.error(f"Training failed for {model_name}: {e}")
+            st.stop()
+
         results.append(
             {
                 "Model": model_name,
