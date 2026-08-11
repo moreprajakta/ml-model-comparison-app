@@ -179,9 +179,23 @@ def main():
     if y.dtype == object or y.dtype.name == "category":
         y = LabelEncoder().fit_transform(y.astype(str))
 
+    if len(pd.unique(y)) < 2:
+        st.error(
+            "The chosen target column contains only one class. "
+            "Please select a target with at least two distinct labels."
+        )
+        st.stop()
+
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=test_size, random_state=random_state, stratify=y if len(pd.unique(y)) > 1 else None
     )
+
+    if len(pd.unique(y_train)) < 2:
+        st.error(
+            "The training split contains only one class. "
+            "Try reducing the test set size or using a dataset with more class variety."
+        )
+        st.stop()
 
     if not selected_models:
         st.error("Select at least one model to compare.")
