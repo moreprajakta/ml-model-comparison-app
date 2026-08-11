@@ -40,7 +40,12 @@ def encode_categorical(df: pd.DataFrame) -> pd.DataFrame:
 
 def build_model(name: str, params: dict):
     if name == "Logistic Regression":
-        return LogisticRegression(max_iter=params["max_iter"], C=params["C"], solver="liblinear")
+        return LogisticRegression(
+            max_iter=params["max_iter"],
+            C=params["C"],
+            solver="lbfgs",
+            multi_class="auto",
+        )
     if name == "Decision Tree":
         return DecisionTreeClassifier(max_depth=params["max_depth"] or None, random_state=42)
     if name == "kNN":
