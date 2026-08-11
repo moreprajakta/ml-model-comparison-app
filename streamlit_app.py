@@ -21,7 +21,7 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.preprocessing import StandardScaler
 from sklearn.tree import DecisionTreeClassifier
 
-DATA_PATH = 'heart-disease-dataset/heart.csv'
+DATA_PATH = './heart.csv'
 
 
 @st.cache_data
