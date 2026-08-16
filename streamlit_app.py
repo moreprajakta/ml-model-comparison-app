@@ -3,6 +3,8 @@ import os
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
+import joblib
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
@@ -47,8 +49,30 @@ def build_models() -> dict:
         'Random Forest': RandomForestClassifier(random_state=42),
     }
 
-def evaluate_model(model, X_train, X_test, y_train, y_test):
-    model.fit(X_train, y_train)
+
+def load_saved_models(model_folder: str = 'model') -> dict:
+    models = {}
+    mapping = {
+        'Logistic Regression': 'Logistic_Regression.joblib',
+        'Decision Tree': 'Decision_Tree.joblib',
+        'kNN': 'kNN.joblib',
+        'Naive Bayes': 'Naive_Bayes.joblib',
+        'Random Forest': 'Random_Forest.joblib',
+    }
+    for name, fname in mapping.items():
+        path = os.path.join(model_folder, fname)
+        if os.path.exists(path):
+            try:
+                models[name] = joblib.load(path)
+            except Exception:
+                # Ignore load errors; user will see training fallback
+                pass
+    return models
+
+
+def evaluate_model(model, X_train, X_test, y_train, y_test, fit_model: bool = True):
+    if fit_model:
+        model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
     y_proba = model.predict_proba(X_test)[:, 1] if hasattr(model, 'predict_proba') else None
 
@@ -105,6 +129,10 @@ def main():
     st.markdown(f'**Dataset shape:** {df.shape[0]} rows × {df.shape[1]} columns')
     st.markdown('**Target column:** `target`')
 
+    st.sidebar.header('Options')
+    uploaded_file = st.sidebar.file_uploader('Upload CSV test data (optional)', type=['csv'])
+    use_saved = st.sidebar.checkbox('Use saved models from /model folder (if available)')
+
     X = df.drop('target', axis=1)
     y = df['target']
 
@@ -121,19 +149,45 @@ def main():
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
 
-    X_train, X_test, y_train, y_test = train_test_split(
-        X_scaled, y, test_size=0.2, random_state=42, stratify=y if len(pd.unique(y)) > 1 else None
-    )
+    # If user uploaded a test CSV, use it as the test set (must contain 'target')
+    if uploaded_file is not None:
+        try:
+            df_test = pd.read_csv(uploaded_file)
+            if 'target' not in df_test.columns:
+                st.error('Uploaded CSV must contain a `target` column.')
+                st.stop()
+            X_test = df_test.drop('target', axis=1)
+            y_test = df_test['target']
+            # align columns if necessary
+            if list(X_test.columns) != list(X.columns):
+                st.warning('Uploaded test CSV columns differ from training dataset — attempting to align by column names.')
+                X_test = X_test.reindex(columns=X.columns)
+            # scale using scaler fitted on training set
+            X_test = scaler.transform(X_test.fillna(0))
+            X_train = X_scaled
+            y_train = y
+        except Exception as exc:
+            st.error(f'Failed to read uploaded CSV: {exc}')
+            st.stop()
+    else:
+        X_train, X_test, y_train, y_test = train_test_split(
+            X_scaled, y, test_size=0.2, random_state=42, stratify=y if len(pd.unique(y)) > 1 else None
+        )
 
     models = build_models()
+    # optionally load saved pre-trained models
+    saved_models = load_saved_models() if use_saved else {}
     results = []
     detailed = {}
 
     for model_name, model in models.items():
         try:
-            stats = evaluate_model(model, X_train, X_test, y_train, y_test)
+            if model_name in saved_models:
+                stats = evaluate_model(saved_models[model_name], X_train, X_test, y_train, y_test, fit_model=False)
+            else:
+                stats = evaluate_model(model, X_train, X_test, y_train, y_test, fit_model=True)
         except Exception as exc:
-            st.error(f'Training failed for {model_name}: {exc}')
+            st.error(f'Evaluation failed for {model_name}: {exc}')
             st.stop()
 
         results.append(
