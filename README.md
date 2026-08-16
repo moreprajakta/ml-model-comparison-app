@@ -12,7 +12,7 @@ Build and compare multiple classification models on a public dataset, report eva
 - Source: included in repository (common heart disease dataset)
 
 ## Github Repository Link
-Add your GitHub repository link here (required for submission).
+https://github.com/moreprajakta/ml-model-comparison-app/tree/main
 
 ## Models used and Evaluation Metrics
 The project implements the following models:
@@ -32,21 +32,14 @@ The project implements the following models:
 | Random Forest | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
 
 ## Model observations
-Add your short observations about each model's performance here. Example:
-- Logistic Regression: ...
-- Decision Tree: ...
 
-Suggested observations (edit as needed):
-- **Logistic Regression:** Good baseline with strong AUC (0.935) and high recall (0.924). Performs well but slightly less precise than tree/ensemble.
-- **Decision Tree:** Very high scores on test set (Accuracy 0.985). May be overfitting to training data—check cross-validation.
-- **kNN:** Moderate performance (Accuracy 0.698); sensitive to feature scaling and dataset imbalance.
-- **Naive Bayes:** Strong recall and balanced F1 (0.840); good simple baseline for this dataset.
-- **Random Forest:** Perfect scores on provided test set—likely indicates overfitting or test/ train overlap; validate with cross-validation and unseen data.
+| ML Model Name | Observation about model performance |
+|---|---|
+| **Logistic Regression** | Provides a solid baseline with strong AUC score (0.935) and excellent recall (0.924), making it reliable for identifying positive cases. However, lower precision (0.770) suggests some false positives. Good interpretability and computational efficiency. |
+| **Decision Tree** | Achieves very high accuracy (0.985) and perfect precision/recall on test set. Decision boundaries are interpretable and easy to visualize. May indicate potential overfitting—requires cross-validation to confirm generalization capability. |
+| **kNN** | Shows moderate performance (Accuracy 0.698, F1 0.699) with lowest MCC score (0.396), suggesting struggles with class separation. Sensitive to feature scaling and data imbalance. Computationally expensive for large datasets but can work well with proper hyperparameter tuning. |
+| **Naive Bayes** | Good performance with balanced metrics (Accuracy 0.829, F1 0.840) and strong AUC (0.904). Performs well as a fast baseline model with reasonable recall (0.876). Assumes feature independence which may not hold perfectly for this dataset. |
+| **Random Forest** | Achieves perfect scores across all metrics (Accuracy 1.000, AUC 1.000, F1 1.000). Excellent ensemble method that captures complex patterns. Perfect scores warrant validation with cross-validation and additional holdout test sets to rule out overfitting or test/train data leakage. |
 
 ## Overall winner
-Based on the metrics above, `Random Forest` achieves the highest scores on the provided test set. However, several models (Decision Tree, kNN) also show perfect or near-perfect scores, suggesting a need to verify test independence and perform cross-validation before declaring a final winner.
-
-## Overall winner
-State which model performed best on the chosen dataset and why.
-
-
+**Random Forest** is the best-performing model on this dataset, achieving perfect scores (1.0) across all evaluation metrics. However, the perfect scores suggest possible overfitting; therefore, cross-validation and testing on completely unseen data are recommended to confirm true generalization performance. Among models with more conservative scores, **Logistic Regression** and **Naive Bayes** offer reliable alternatives with good AUC and recall values for practical deployment.
