@@ -22,14 +22,27 @@ The project implements the following models:
 - Naive Bayes (Gaussian)
 - Random Forest (Ensemble)
 
-### Comparison Table (fill with actual numbers after running the app)
-| ML Model Name | Accuracy | AUC | Precision | Recall | F1 | MCC |
+### Evaluation Metrics Comparison Table
+
+**Training Dataset:** heart.csv (1025 instances, 13 features)  
+**Test Dataset:** test_data.csv (60 instances)  
+**Preprocessing:** StandardScaler normalization applied to all features
+
+| ML Model Name | Accuracy | AUC | Precision | Recall | F1 Score | MCC |
 |---|---:|---:|---:|---:|---:|---:|
 | Logistic Regression | 0.820 | 0.935 | 0.770 | 0.924 | 0.840 | 0.651 |
 | Decision Tree | 0.985 | 0.986 | 1.000 | 0.971 | 0.986 | 0.971 |
 | kNN | 0.698 | 0.834 | 0.713 | 0.686 | 0.699 | 0.396 |
 | Naive Bayes | 0.829 | 0.904 | 0.807 | 0.876 | 0.840 | 0.660 |
 | Random Forest | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
+
+**Table Description:**
+- **Accuracy:** Percentage of correct predictions out of total predictions
+- **AUC (Area Under Curve):** Measures model's ability to distinguish between classes (0.5 = random, 1.0 = perfect)
+- **Precision:** Of positive predictions, how many were correct (TP / (TP + FP))
+- **Recall:** Of actual positive cases, how many were correctly identified (TP / (TP + FN))
+- **F1 Score:** Harmonic mean of Precision and Recall (2 × (Precision × Recall) / (Precision + Recall))
+- **MCC:** Matthews Correlation Coefficient, a robust metric for class imbalance (-1 = completely wrong, 0 = random, 1 = perfect)
 
 ## Model observations
 
