@@ -49,39 +49,4 @@ Based on the metrics above, `Random Forest` achieves the highest scores on the p
 ## Overall winner
 State which model performed best on the chosen dataset and why.
 
-## Running locally
-1. Install dependencies: `pip install -r requirements.txt`
-2. Start the app: `streamlit run streamlit_app.py`
 
-## Streamlit Cloud deployment
-1. Push this repository to GitHub.
-2. Create a new app in Streamlit Community Cloud.
-3. Set the repository and branch to this project and use `streamlit_app.py` as the main file.
-4. Once deployed, paste the live app URL here.
-
-## Test data and BITS Virtual Lab screenshot
-- Include `test_data.csv` in the repo for evaluation.
-- Add a screenshot of assignment execution on BITS Virtual Lab in the repository and in your final PDF submission.
-
-## Notes
-- The app now supports uploading a CSV test file (must include `target`) via the sidebar. If a test CSV is uploaded the models are trained on the bundled `heart.csv` dataset and evaluated on the uploaded test set.
-- The app supports loading saved `*.joblib` models from the `model/` folder when the sidebar option is checked.
-
-## Live Streamlit App
-The Streamlit application is ready for deployment on Streamlit Community Cloud. Once the repository is pushed to GitHub, the app can be launched from `streamlit_app.py`.
-
-### Running locally
-1. Install dependencies: `pip install -r requirements.txt`
-2. Start the app: `streamlit run streamlit_app.py`
-
-### Streamlit Cloud deployment
-1. Push this repository to GitHub.
-2. Create a new app in Streamlit Community Cloud.
-3. Set the repository and branch to this project and use `streamlit_app.py` as the main file.
-4. Once deployed, the app will open an interactive frontend for all supported ML models.
-
-A standard share link looks like:
-
-`https://share.streamlit.io/moreprajakta/ml-model-comparison-app/main/streamlit_app.py`
-
-Replace `moreprajakta` with your GitHub username if you deploy from a fork or personal repository.
